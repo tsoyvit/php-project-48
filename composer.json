@@ -1,0 +1,22 @@
+{
+    "name": "hexlet/code",
+    "description": "Это мой второй учебный проект",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Vitaliy",
+            "email": "tsoyvetal@gmail.com"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    },
+    "bin": [
+        "bin/gendiff"
+    ]
+}
