@@ -3,9 +3,10 @@
     "description": "Это мой второй учебный проект",
     "license": "MIT",
     "autoload": {
-        "psr-4": {
-            "Hexlet\\Code\\": "src/"
-        }
+        "files": [
+            "src/Parsing/Funcs.php",
+            "src/Core/Gendiff.php"
+        ]
     },
     "authors": [
         {
@@ -14,7 +15,8 @@
         }
     ],
     "require": {
-        "docopt/docopt": "^1.0"
+        "docopt/docopt": "^1.0",
+        "lstrojny/functional-php": "^1.17"
     },
     "bin": [
         "bin/gendiff"
