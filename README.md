@@ -5,6 +5,6 @@
 ### Code Climate
 [![Maintainability](https://api.codeclimate.com/v1/badges/00ddf00092642a675397/maintainability)](https://codeclimate.com/github/tsoyvit/php-project-48/maintainability)
 ### Test Coverage
-
+[![Test Coverage](https://api.codeclimate.com/v1/badges/00ddf00092642a675397/test_coverage)](https://codeclimate.com/github/tsoyvit/php-project-48/test_coverage)
 ## Демонстрация gendiff
 [![asciicast](https://asciinema.org/a/Zb8ynsa8aKjUKFqoVOzfp6Qrv.svg)](https://asciinema.org/a/Zb8ynsa8aKjUKFqoVOzfp6Qrv)
