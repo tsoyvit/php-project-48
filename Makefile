@@ -7,8 +7,6 @@ lint: # Запуск phpcs
 test:
 	composer exec --verbose phpunit tests
 test-coverage:
-	XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --coverage-filter=src/
-test-coverage-html:
-	XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html=coverage/ --coverage-filter=src/
+	XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 test-coverage-text:
-	XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --coverage-filter=src/ --no-logging
+	XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text
