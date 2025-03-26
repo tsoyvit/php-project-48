@@ -4,26 +4,8 @@ namespace App\Differ;
 
 use Exception;
 
-/**
- * @throws Exception
- */
-function getContentJson($filePath)
-{
-    $absolutePath = realpath($filePath);
-    if ($absolutePath === false) {
-        throw new Exception("File '{$filePath}' does not exist");
-    }
-    $content = file_get_contents($absolutePath);
-    if (false === $content) {
-        throw new Exception("Unable to read file '{$filePath}'.");
-    }
-    $data = json_decode($content, true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Invalid JSON in file '{$filePath}'.");
-    }
-    ksort($data);
-    return $data;
-}
+use function App\Parser\formatValue;
+use function App\Parser\getContentFile;
 
 function compareFiles(array $firstData, array $secondData): array
 {
@@ -52,21 +34,13 @@ function compareFiles(array $firstData, array $secondData): array
     return $diff;
 }
 
-function formatValue($value): string
-{
-    if (is_bool($value)) {
-        return $value ? 'true' : 'false';
-    }
-    return (string)$value;
-}
-
 /**
  * @throws Exception
  */
 function genDiff($filePath1, $filePath2): string
 {
-    $firstData = getContentJson($filePath1);
-    $secondData = getContentJson($filePath2);
+    $firstData = getContentFile($filePath1);
+    $secondData = getContentFile($filePath2);
     $diff = compareFiles($firstData, $secondData);
     $lines = array_map(fn($line) => "  {$line}", $diff);
     return "{\n" . implode("\n", $lines) . "\n}";

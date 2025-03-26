@@ -6,38 +6,16 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function App\Differ\{getContentJson, compareFiles, formatValue, genDiff};
+use function App\Differ\{compareFiles, genDiff};
+use function App\Parser\{getContentFile, formatValue};
 
 class ParserTest extends TestCase
 {
-    /**
-     * @throws Exception
-     */
-    public function testReturnsSortedArrayForValidJsonFile()
-    {
-        $filePath = tempnam(sys_get_temp_dir(), 'json');
-        file_put_contents($filePath, '{"b":2,"a":1}');
-        $result = getContentJson($filePath);
-        $this->assertSame(['a' => 1, 'b' => 2], $result);
-        unlink($filePath);
-    }
-
     public function testThrowsExceptionIfFileDoesNotExist()
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage("does not exist");
-        getContentJson('/path/to/nonexistent/file.json');
-    }
-    public function testThrowsExceptionIfJsonIsInvalid()
-    {
-        $filePath = tempnam(sys_get_temp_dir(), 'json');
-        file_put_contents($filePath, '{invalid json');
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Invalid JSON");
-
-        getContentJson($filePath);
-        unlink($filePath);
+        getContentFile('/path/to/nonexistent/file.json');
     }
 
 
@@ -59,7 +37,7 @@ class ParserTest extends TestCase
         ];
     }
 
-    public function testCompareFilesBasicComparison()
+    public function testCompareFiles()
     {
         $firstData = [
             'name' => 'John',
@@ -100,30 +78,51 @@ class ParserTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testGenDiffBasicCase()
+    public function testGenDiffJson()
     {
-        $file1 = tempnam(sys_get_temp_dir(), 'test1');
-        $file2 = tempnam(sys_get_temp_dir(), 'test2');
-
-        file_put_contents($file1, '{"name": "John", "age": 30}');
-        file_put_contents($file2, '{"name": "John", "age": 31, "city": "NY"}');
-
-
+        $filePath1 = realpath(__DIR__ . '/../../Fixtures/file1.json');
+        $filePath2 = realpath(__DIR__ . '/../../Fixtures/file2.json');
         $expected = "{\n" .
-            "  - age: 30\n" .
-            "  + age: 31\n" .
-            "    name: John\n" .
-            "  + city: NY\n" .
+            "  - follow: false\n" .
+            "    host: hexlet.io\n" .
+            "  - proxy: 123.234.53.22\n" .
+            "  - timeout: 50\n" .
+            "  + timeout: 20\n" .
+            "  + verbose: true\n" .
             "}";
+        $this->assertEquals($expected, genDiff($filePath1, $filePath2));
+    }
 
-        $result = genDiff($file1, $file2);
+    /**
+     * @throws Exception
+     */
+    public function testGenDiffYaml()
+    {
+        $filePath1 = realpath(__DIR__ . '/../../Fixtures/file1.yaml');
+        $filePath2 = realpath(__DIR__ . '/../../Fixtures/file2.yaml');
+        $expected = "{\n" .
+            "  - follow: false\n" .
+            "    host: hexlet.io\n" .
+            "  - proxy: 123.234.53.22\n" .
+            "  - timeout: 50\n" .
+            "  + timeout: 20\n" .
+            "  + verbose: true\n" .
+            "}";
+        $this->assertEquals($expected, genDiff($filePath1, $filePath2));
+    }
 
-        $normalizedExpected = str_replace("\r\n", "\n", $expected);
-        $normalizedResult = str_replace("\r\n", "\n", $result);
-
-        $this->assertEquals($normalizedExpected, $normalizedResult);
-
-        unlink($file1);
-        unlink($file2);
+    /**
+     * @throws Exception
+     */
+    public function testGetContentFileYaml()
+    {
+        $filePath = realpath(__DIR__ . '/../../Fixtures/file1.yaml');
+        $expected = [
+            'host' => 'hexlet.io',
+            'timeout' => 50,
+            'proxy' => '123.234.53.22',
+            'follow' => false
+        ];
+        $this->assertEquals($expected, getContentFile($filePath));
     }
 }
