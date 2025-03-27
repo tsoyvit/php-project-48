@@ -4,125 +4,96 @@ namespace Tests\Unit\Differ;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\Yaml\Yaml;
 
-use function App\Differ\{compareFiles, genDiff};
-use function App\Parser\{getContentFile, formatValue};
+use function App\Differ\{buildDiff, genDiff, format};
+use function App\Parser\parseFile;
+use function App\Stylish\{formatStylish, stringifyValue};
 
 class ParserTest extends TestCase
 {
-    public function testThrowsExceptionIfFileDoesNotExist()
+    /**
+     * @throws Exception
+     */
+    public function testGenDiffJsonYaml()
     {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage("does not exist");
-        getContentFile('/path/to/nonexistent/file.json');
-    }
+        $jsonPath1 = realpath(__DIR__ . '/../../Fixtures/file1.json');
+        $jsonPath2 = realpath(__DIR__ . '/../../Fixtures/file2.json');
+        $yamlPath1 = realpath(__DIR__ . '/../../Fixtures/file1.yaml');
+        $yamlPath2 = realpath(__DIR__ . '/../../Fixtures/file2.yaml');
+        $expectedPath = realpath(__DIR__ . '/../../Fixtures/expectedDiff.txt');
+        $expected = file_get_contents($expectedPath);
 
-
-    #[DataProvider('formatValueProvider')]
-    public function testFormatValue($input, $expected): void
-    {
-        $this->assertEquals($expected, formatValue($input));
-    }
-
-    public static function formatValueProvider(): array
-    {
-        return [
-            'boolean true' => [true, 'true'],
-            'boolean false' => [false, 'false'],
-            'string' => ['text', 'text'],
-            'integer' => [123, '123'],
-            'float' => [12.3, '12.3'],
-            'null' => [null, '']
-        ];
-    }
-
-    public function testCompareFiles()
-    {
-        $firstData = [
-            'name' => 'John',
-            'age' => 30,
-            'city' => 'New York'
-        ];
-
-        $secondData = [
-            'name' => 'John',
-            'age' => 31,
-            'country' => 'USA'
-        ];
-
-        $expected = [
-            '  name: John',
-            '- age: 30',
-            '+ age: 31',
-            '- city: New York',
-            '+ country: USA'
-        ];
-        $result = compareFiles($firstData, $secondData);
-
-        $this->assertEquals($expected, $result);
-    }
-
-    public function testCompareFilesWithEmptyArrays()
-    {
-        $this->assertEquals([], compareFiles([], []));
-        $secondData = ['key' => 'value'];
-        $expected = ['+ key: value'];
-        $this->assertEquals($expected, compareFiles([], $secondData));
-
-        $firstData = ['key' => 'value'];
-        $expected = ['- key: value'];
-        $this->assertEquals($expected, compareFiles($firstData, []));
+        $this->assertEquals($expected, genDiff($jsonPath1, $jsonPath2));
+        $this->assertEquals($expected, genDiff($yamlPath1, $yamlPath2));
     }
 
     /**
      * @throws Exception
      */
-    public function testGenDiffJson()
+    public function testGenDiffJsonYamlNested()
     {
-        $filePath1 = realpath(__DIR__ . '/../../Fixtures/file1.json');
-        $filePath2 = realpath(__DIR__ . '/../../Fixtures/file2.json');
-        $expected = "{\n" .
-            "  - follow: false\n" .
-            "    host: hexlet.io\n" .
-            "  - proxy: 123.234.53.22\n" .
-            "  - timeout: 50\n" .
-            "  + timeout: 20\n" .
-            "  + verbose: true\n" .
-            "}";
-        $this->assertEquals($expected, genDiff($filePath1, $filePath2));
+        $jsonPath1 = realpath(__DIR__ . '/../../Fixtures/fileNested1.json');
+        $jsonPath2 = realpath(__DIR__ . '/../../Fixtures/fileNested2.json');
+        $yamlPath1 = realpath(__DIR__ . '/../../Fixtures/fileNested1.yaml');
+        $yamlPath2 = realpath(__DIR__ . '/../../Fixtures/fileNested2.yaml');
+        $expectedPath = realpath(__DIR__ . '/../../Fixtures/expectedDiffNested.txt');
+        $expected = file_get_contents($expectedPath);
+
+        $this->assertEquals($expected, genDiff($jsonPath1, $jsonPath2));
+        $this->assertEquals($expected, genDiff($yamlPath1, $yamlPath2));
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testGenDiffYaml()
+    public function testBuildDiffAddedProperty()
     {
-        $filePath1 = realpath(__DIR__ . '/../../Fixtures/file1.yaml');
-        $filePath2 = realpath(__DIR__ . '/../../Fixtures/file2.yaml');
-        $expected = "{\n" .
-            "  - follow: false\n" .
-            "    host: hexlet.io\n" .
-            "  - proxy: 123.234.53.22\n" .
-            "  - timeout: 50\n" .
-            "  + timeout: 20\n" .
-            "  + verbose: true\n" .
-            "}";
-        $this->assertEquals($expected, genDiff($filePath1, $filePath2));
-    }
+        $file1Data = (object)['a' => 1, 'b' => 2];
+        $file2Data = (object)['a' => 1, 'b' => 2, 'c' => 3];
 
-    /**
-     * @throws Exception
-     */
-    public function testGetContentFileYaml()
-    {
-        $filePath = realpath(__DIR__ . '/../../Fixtures/file1.yaml');
-        $expected = [
-            'host' => 'hexlet.io',
-            'timeout' => 50,
-            'proxy' => '123.234.53.22',
-            'follow' => false
+        $expectedDiff = [
+            ['type' => 'unchanged', 'key' => 'a', 'value' => 1],
+            ['type' => 'unchanged', 'key' => 'b', 'value' => 2],
+            ['type' => 'added', 'key' => 'c', 'value' => 3],
         ];
-        $this->assertEquals($expected, getContentFile($filePath));
+
+        $this->assertEquals($expectedDiff, buildDiff($file1Data, $file2Data));
+    }
+
+    public function testStringifyValueSimpleTypes()
+    {
+        $this->assertEquals('true', stringifyValue(true));
+        $this->assertEquals('false', stringifyValue(false));
+        $this->assertEquals('null', stringifyValue(null));
+        $this->assertEquals('123', stringifyValue(123));
+        $this->assertEquals('hello', stringifyValue('hello'));
+    }
+
+    public function testFormatStylishUnchangedAndAdded()
+    {
+        $diff = [
+            ['type' => 'unchanged', 'key' => 'a', 'value' => 1],
+            ['type' => 'added', 'key' => 'b', 'value' => 2],
+        ];
+        $expectedString = "{\n    a: 1\n  + b: 2\n}";
+        $this->assertEquals($expectedString, formatStylish($diff));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testParseFile()
+    {
+        $jsonPath1 = realpath(__DIR__ . '/../../Fixtures/file1.json');
+        $yamlPath1 = realpath(__DIR__ . '/../../Fixtures/file1.yaml');
+        $expectedJson = json_decode(file_get_contents($jsonPath1));
+        $expectedYaml = Yaml::parse(file_get_contents($yamlPath1), Yaml::PARSE_OBJECT_FOR_MAP);
+        $this->assertEquals($expectedJson, parseFile($jsonPath1));
+        $this->assertEquals($expectedYaml, parseFile($yamlPath1));
+    }
+
+    public function testArrayWithDepth()
+    {
+        $input = ['key' => 'value'];
+        $expected = "{\n        key: value\n    }";
+        $this->assertEquals($expected, stringifyValue($input, 1));
     }
 }

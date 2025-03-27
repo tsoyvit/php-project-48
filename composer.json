@@ -8,7 +8,8 @@
         },
         "files": [
             "src/Differ/Differ.php",
-            "src/Parser/Parser.php"
+            "src/Parser/Parser.php",
+            "src/Formaters/Stylish.php"
         ]
     },
     "autoload-dev": {

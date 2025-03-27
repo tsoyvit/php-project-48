@@ -4,31 +4,47 @@ namespace App\Differ;
 
 use Exception;
 
-use function App\Parser\formatValue;
-use function App\Parser\getContentFile;
+use function App\Parser\parseFile;
+use function App\Stylish\formatStylish;
 
-function compareFiles(array $firstData, array $secondData): array
+/**
+ * @throws Exception
+ */
+function genDiff(string $filepath1, string $filepath2, string $format = 'stylish'): string
 {
+    $file1Data = parseFile($filepath1);
+    $file2Data = parseFile($filepath2);
+    $diff = buildDiff($file1Data, $file2Data);
+    return format($diff, $format);
+}
+
+function buildDiff(object $file1Data, object $file2Data): array
+{
+    $keys1 = array_keys(get_object_vars($file1Data));
+    $keys2 = array_keys(get_object_vars($file2Data));
+    $allKeys = array_unique(array_merge($keys1, $keys2));
+    sort($allKeys);
     $diff = [];
-    foreach ($firstData as $key => $value) {
-        $firstValue = formatValue($value);
-        if (array_key_exists($key, $secondData)) {
-            $secondValue = $secondData[$key];
-            $formattedSecondValue = formatValue($secondValue);
-            if ($value == $secondValue) {
-                $diff[] = "  {$key}: {$firstValue}";
+    foreach ($allKeys as $key) {
+        $hasKey1 = property_exists($file1Data, $key);
+        $hasKey2 = property_exists($file2Data, $key);
+
+
+        if ($hasKey1 && !$hasKey2) {
+            $diff[] = ['type' => 'removed', 'key' => $key, 'value' => $file1Data->$key];
+        } elseif (!$hasKey1 && $hasKey2) {
+            $diff[] = ['type' => 'added', 'key' => $key, 'value' => $file2Data->$key];
+        } elseif ($hasKey1 && $hasKey2) {
+            $value1 = $file1Data->$key;
+            $value2 = $file2Data->$key;
+
+            if (is_object($value1) && is_object($value2)) {
+                $diff[] = ['type' => 'nested', 'key' => $key, 'children' => buildDiff($value1, $value2)];
+            } elseif ($value1 === $value2) {
+                $diff[] = ['type' => 'unchanged', 'key' => $key, 'value' => $value1];
             } else {
-                $diff[] = "- {$key}: {$firstValue}";
-                $diff[] = "+ {$key}: {$formattedSecondValue}";
+                $diff[] = ['type' => 'changed', 'key' => $key, 'oldValue' => $value1, 'newValue' => $value2];
             }
-        } else {
-            $diff[] = "- {$key}: {$firstValue}";
-        }
-    }
-    foreach ($secondData as $subKey => $subValue) {
-        if (!array_key_exists($subKey, $firstData)) {
-            $secondSubValue = formatValue($subValue);
-            $diff[] = "+ {$subKey}: {$secondSubValue}";
         }
     }
     return $diff;
@@ -37,11 +53,10 @@ function compareFiles(array $firstData, array $secondData): array
 /**
  * @throws Exception
  */
-function genDiff($filePath1, $filePath2): string
+function format(array $diff, string $formatName): string
 {
-    $firstData = getContentFile($filePath1);
-    $secondData = getContentFile($filePath2);
-    $diff = compareFiles($firstData, $secondData);
-    $lines = array_map(fn($line) => "  {$line}", $diff);
-    return "{\n" . implode("\n", $lines) . "\n}";
+    return match ($formatName) {
+        'stylish' => formatStylish($diff),
+        default => throw new Exception("Unknown format: {$formatName}"),
+    };
 }

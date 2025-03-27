@@ -29,7 +29,7 @@ try {
         echo "gendiff 1.0.0\n";
     } elseif (!empty($response['<firstFile>']) && !empty($response['<secondFile>'])) {
         $format = $response['--format'];
-        $diff = genDiff($response['<firstFile>'], $response['<secondFile>']);
+        $diff = genDiff($response['<firstFile>'], $response['<secondFile>'], $format);
         echo $diff . "\n";
     }
 } catch (\Docopt\LanguageError $e) {
