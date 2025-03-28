@@ -2,39 +2,6 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
+use function App\Cli\runCli;
 
-use Docopt\Handler;
-use function App\Differ\genDiff;
-
-$doc = <<<DOC
-Generate diff
-
-Usage:
-  gendiff (-h|--help)
-  gendiff (-v|--version)
-  gendiff [--format <fmt>] <firstFile> <secondFile>
-
-Options:
-  -h --help                     Show this screen
-  -v --version                  Show version
-  --format <fmt>                Report format [default: stylish]
-DOC;
-
-$handler = new Handler();
-try {
-    $response = $handler->handle($doc);
-    if ($response['--help']) {
-        echo $doc;
-    } elseif ($response['--version']) {
-        echo "gendiff 1.0.0\n";
-    } elseif (!empty($response['<firstFile>']) && !empty($response['<secondFile>'])) {
-        $format = $response['--format'];
-        $diff = genDiff($response['<firstFile>'], $response['<secondFile>'], $format);
-        echo $diff . "\n";
-    }
-} catch (\Docopt\LanguageError $e) {
-    die("Error: " . $e->getMessage() . "\n");
-} catch (Exception $e) {
-
-}
-
+runCli();

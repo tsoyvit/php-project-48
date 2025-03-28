@@ -7,9 +7,12 @@
             "App\\": "src/"
         },
         "files": [
-            "src/Differ/Differ.php",
-            "src/Parser/Parser.php",
-            "src/Formaters/Stylish.php"
+            "src/Formatters/Stylish.php",
+            "src/Formatters/Plain.php",
+            "src/Formatter.php",
+            "src/Differ.php",
+            "src/Parser.php",
+            "src/Cli.php"
         ]
     },
     "autoload-dev": {

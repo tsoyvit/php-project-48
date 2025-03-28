@@ -4,7 +4,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/00ddf00092642a675397/maintainability)](https://codeclimate.com/github/tsoyvit/php-project-48/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/00ddf00092642a675397/test_coverage)](https://codeclimate.com/github/tsoyvit/php-project-48/test_coverage)
 ## Демонстрация gendiff
-[![asciicast](https://asciinema.org/a/5TCLc7vlqcW0kE8hzmvXKRwnu.svg)](https://asciinema.org/a/5TCLc7vlqcW0kE8hzmvXKRwnu)
+[![asciicast](https://asciinema.org/a/isFSiAIDPW1Npzu24JvDYbqSe.svg)](https://asciinema.org/a/isFSiAIDPW1Npzu24JvDYbqSe)
 
 ## Пример использования
 
@@ -24,8 +24,8 @@ $yamlDiff = genDiff('file1.yaml', 'file2.yaml');
 echo $yamlDiff;
 
 // Сравнение JSON и YAML
-$yamlDiff = genDiff('file1.json', 'file2.yaml');
-echo $yamlDiff;
+$jsonYamlDiff = genDiff('file1.json', 'file2.yaml');
+echo $jsonYamlDiff;
 
 //Пример вывода:
 {

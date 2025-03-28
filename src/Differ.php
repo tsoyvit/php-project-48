@@ -5,7 +5,7 @@ namespace App\Differ;
 use Exception;
 
 use function App\Parser\parseFile;
-use function App\Stylish\formatStylish;
+use function App\Formatters\format;
 
 /**
  * @throws Exception
@@ -48,15 +48,4 @@ function buildDiff(object $file1Data, object $file2Data): array
         }
     }
     return $diff;
-}
-
-/**
- * @throws Exception
- */
-function format(array $diff, string $formatName): string
-{
-    return match ($formatName) {
-        'stylish' => formatStylish($diff),
-        default => throw new Exception("Unknown format: {$formatName}"),
-    };
 }
