@@ -4,7 +4,7 @@ namespace Tests\Unit\Formatters;
 
 use PHPUnit\Framework\TestCase;
 
-use function App\Formatters\Json\formatJson;
+use function Gendiff\Formatters\Json\formatJson;
 
 class JsonTest extends TestCase
 {

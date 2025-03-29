@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Formatters\Json;
+namespace Gendiff\Formatters\Json;
 
 function formatJson($diff): false|string
 {

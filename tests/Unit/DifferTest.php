@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
-use function App\Differ\{buildDiff, genDiff};
+use function Gendiff\Differ\{buildDiff, genDiff};
 
 class DifferTest extends TestCase
 {

@@ -4,7 +4,7 @@ namespace Tests\Unit\Formatters;
 
 use PHPUnit\Framework\TestCase;
 
-use function App\Formatters\Stylish\{formatStylish, stringifyValue};
+use function Gendiff\Formatters\Stylish\{formatStylish, stringifyValue};
 
 class StylishTest extends TestCase
 {

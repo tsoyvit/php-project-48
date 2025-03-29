@@ -5,9 +5,9 @@ namespace Tests\Unit;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
-use function App\Formatter\format;
-use function App\Formatters\Plain\formatPlain;
-use function App\Formatters\Stylish\formatStylish;
+use function Gendiff\Formatter\format;
+use function Gendiff\Formatters\Plain\formatPlain;
+use function Gendiff\Formatters\Stylish\formatStylish;
 
 class FormattersTest extends TestCase
 {

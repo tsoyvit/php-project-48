@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Formatter;
+namespace Gendiff\Formatter;
 
 use Exception;
 
-use function App\Formatters\Json\formatJson;
-use function App\Formatters\Stylish\formatStylish;
-use function App\Formatters\Plain\formatPlain;
+use function Gendiff\Formatters\Json\formatJson;
+use function Gendiff\Formatters\Stylish\formatStylish;
+use function Gendiff\Formatters\Plain\formatPlain;
 
 /**
  * @throws Exception

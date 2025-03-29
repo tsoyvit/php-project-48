@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Parser;
+namespace Gendiff\Parser;
 
 use Exception;
 use Symfony\Component\Yaml\Yaml;

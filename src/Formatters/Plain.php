@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Formatters\Plain;
+namespace Gendiff\Formatters\Plain;
 
 function formatPlain(array $diff, string $parentKey = ''): string
 {
