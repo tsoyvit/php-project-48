@@ -31,51 +31,21 @@ function buildDiff(object $file1Data, object $file2Data): array
     return reduce_left($sortedKeys, function ($key, $index, $collection, $reduction) use ($file1Data, $file2Data) {
         $hasKey1 = property_exists($file1Data, $key);
         $hasKey2 = property_exists($file2Data, $key);
+        $value1 = $file1Data->$key ?? null;
+        $value2 = $file2Data->$key ?? null;
 
-        if ($hasKey1 && !$hasKey2) {
-            return array_merge($reduction, [[
-                'type' => 'removed',
+        $node = match (true) {
+            $hasKey1 && !$hasKey2 => ['type' => 'removed', 'key' => $key, 'value' => $value1],
+            !$hasKey1 && $hasKey2 => ['type' => 'added', 'key' => $key, 'value' => $value2],
+            is_object($value1) && is_object($value2) => [
+                'type' => 'nested',
                 'key' => $key,
-                'value' => $file1Data->$key
-            ]]);
-        }
+                'children' => buildDiff($value1, $value2)
+            ],
+            $value1 === $value2 => ['type' => 'unchanged', 'key' => $key, 'value' => $value1],
+            default => ['type' => 'changed', 'key' => $key, 'oldValue' => $value1, 'newValue' => $value2],
+        };
 
-        if (!$hasKey1 && $hasKey2) {
-            return array_merge($reduction, [[
-                'type' => 'added',
-                'key' => $key,
-                'value' => $file2Data->$key
-            ]]);
-        }
-
-        if ($hasKey1 && $hasKey2) {
-            $value1 = $file1Data->$key;
-            $value2 = $file2Data->$key;
-
-            if (is_object($value1) && is_object($value2)) {
-                return array_merge($reduction, [[
-                    'type' => 'nested',
-                    'key' => $key,
-                    'children' => buildDiff($value1, $value2)
-                ]]);
-            }
-
-            if ($value1 === $value2) {
-                return array_merge($reduction, [[
-                    'type' => 'unchanged',
-                    'key' => $key,
-                    'value' => $value1
-                ]]);
-            }
-
-            return array_merge($reduction, [[
-                'type' => 'changed',
-                'key' => $key,
-                'oldValue' => $value1,
-                'newValue' => $value2
-            ]]);
-        }
-
-        return $reduction;
+        return array_merge($reduction, [$node]);
     }, []);
 }
