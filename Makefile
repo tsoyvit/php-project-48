@@ -4,6 +4,8 @@ validate: # Запуск composer validate
 	composer validate
 lint: # Запуск phpcs
 	composer exec --verbose phpcs -- --standard=PSR12 src bin
+lint-fix:
+	composer exec --verbose phpcbf -- --standard=PSR12 src tests
 test:
 	composer exec --verbose phpunit tests
 test-coverage:
