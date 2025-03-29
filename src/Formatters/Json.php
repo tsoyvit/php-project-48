@@ -2,7 +2,7 @@
 
 namespace Differ\Formatters\Json;
 
-function formatJson($diff): false|string
+function formatJson(array $diff): false|string
 {
-    return json_encode($diff);
+    return json_encode($diff, JSON_UNESCAPED_UNICODE);
 }

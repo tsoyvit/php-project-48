@@ -23,13 +23,12 @@ function buildDiff(object $file1Data, object $file2Data): array
     $keys1 = array_keys(get_object_vars($file1Data));
     $keys2 = array_keys(get_object_vars($file2Data));
     $allKeys = array_unique(array_merge($keys1, $keys2));
-    sort($allKeys);
+    $sortedKeys = $allKeys;
+    usort($sortedKeys, fn($a, $b) => strcmp($a, $b));
     $diff = [];
-    foreach ($allKeys as $key) {
+    foreach ($sortedKeys as $key) {
         $hasKey1 = property_exists($file1Data, $key);
         $hasKey2 = property_exists($file2Data, $key);
-
-
         if ($hasKey1 && !$hasKey2) {
             $diff[] = ['type' => 'removed', 'key' => $key, 'value' => $file1Data->$key];
         } elseif (!$hasKey1 && $hasKey2) {

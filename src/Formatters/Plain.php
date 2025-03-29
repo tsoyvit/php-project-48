@@ -35,7 +35,7 @@ function formatPlain(array $diff, string $parentKey = ''): string
     return implode("\n", $lines);
 }
 
-function stringifyPlainValue($value): string
+function stringifyPlainValue(mixed $value): string
 {
     if (is_object($value) || is_array($value)) {
         return '[complex value]';

@@ -12,6 +12,9 @@ use Symfony\Component\Yaml\Yaml;
 function parseFile(string $filepath): object
 {
     $content = file_get_contents($filepath);
+    if ($content === false) {
+        throw new Exception('Unable to read file: ' . $filepath);
+    }
     $extension = pathinfo($filepath, PATHINFO_EXTENSION);
 
     return match ($extension) {
