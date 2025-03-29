@@ -3,16 +3,13 @@
     "description": "Это мой второй учебный проект",
     "license": "MIT",
     "autoload": {
-        "psr-4": {
-            "App\\": "src/"
-        },
         "files": [
             "src/Formatters/Stylish.php",
             "src/Formatters/Plain.php",
+            "src/Formatters/Json.php",
             "src/Formatter.php",
             "src/Differ.php",
-            "src/Parser.php",
-            "src/Cli.php"
+            "src/Parser.php"
         ]
     },
     "autoload-dev": {

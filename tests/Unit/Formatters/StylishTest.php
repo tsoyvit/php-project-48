@@ -8,7 +8,7 @@ use function App\Formatters\Stylish\{formatStylish, stringifyValue};
 
 class StylishTest extends TestCase
 {
-    public function testStringifyValueSimpleTypes()
+    public function testStringifyValue()
     {
         $this->assertEquals('true', stringifyValue(true));
         $this->assertEquals('false', stringifyValue(false));
@@ -17,20 +17,14 @@ class StylishTest extends TestCase
         $this->assertEquals('hello', stringifyValue('hello'));
     }
 
-    public function testFormatStylishUnchangedAndAdded()
+    public function testFormatStylish()
     {
-        $diff = [
-            ['type' => 'unchanged', 'key' => 'a', 'value' => 1],
-            ['type' => 'added', 'key' => 'b', 'value' => 2],
-        ];
-        $expectedString = "{\n    a: 1\n  + b: 2\n}";
-        $this->assertEquals($expectedString, formatStylish($diff));
-    }
+        $filePath = realpath(__DIR__ . '/../../Fixtures/Formatters/fixture.json');
+        $fixture = json_decode(file_get_contents($filePath), true);
 
-    public function testArrayWithDepth()
-    {
-        $input = ['key' => 'value'];
-        $expected = "{\n        key: value\n    }";
-        $this->assertEquals($expected, stringifyValue($input, 1));
+        $expectedPath = realpath(__DIR__ . '/../../Fixtures/Formatters/expectedNestedStylish.txt');
+        $expected = file_get_contents($expectedPath);
+
+        $this->assertEquals($expected, formatStylish($fixture));
     }
 }

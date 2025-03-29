@@ -4,7 +4,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/00ddf00092642a675397/maintainability)](https://codeclimate.com/github/tsoyvit/php-project-48/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/00ddf00092642a675397/test_coverage)](https://codeclimate.com/github/tsoyvit/php-project-48/test_coverage)
 ## Демонстрация gendiff
-[![asciicast](https://asciinema.org/a/isFSiAIDPW1Npzu24JvDYbqSe.svg)](https://asciinema.org/a/isFSiAIDPW1Npzu24JvDYbqSe)
+[![asciicast](https://asciinema.org/a/mGmCRaGNJpp2RiP7XH5ycFQqF.svg)](https://asciinema.org/a/mGmCRaGNJpp2RiP7XH5ycFQqF)
 
 ## Пример использования
 

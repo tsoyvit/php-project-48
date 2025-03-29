@@ -18,13 +18,13 @@ class DifferTest extends TestCase
         $jsonPath2 = realpath(__DIR__ . '/../Fixtures/fileNested2.json');
         $yamlPath1 = realpath(__DIR__ . '/../Fixtures/fileNested1.yaml');
         $yamlPath2 = realpath(__DIR__ . '/../Fixtures/fileNested2.yaml');
-        $expectedPathStylish = realpath(__DIR__ . '/../Fixtures/expectedNestedStylish.txt');
+        $expectedPathStylish = realpath(__DIR__ . '/../Fixtures/Formatters/expectedNestedStylish.txt');
         $expectedStylish = file_get_contents($expectedPathStylish);
 
         $this->assertEquals($expectedStylish, genDiff($jsonPath1, $jsonPath2));
         $this->assertEquals($expectedStylish, genDiff($yamlPath1, $yamlPath2));
 
-        $expectedPathPlain = realpath(__DIR__ . '/../Fixtures/expectedPlain.txt');
+        $expectedPathPlain = realpath(__DIR__ . '/../Fixtures/Formatters/expectedNestedPlain.txt');
         $expectedPlain = file_get_contents($expectedPathPlain);
         $this->assertEquals($expectedPlain, genDiff($jsonPath1, $jsonPath2, 'plain'));
     }

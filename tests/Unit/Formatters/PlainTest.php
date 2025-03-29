@@ -15,4 +15,15 @@ class PlainTest extends TestCase
         $this->assertEquals('null', stringifyPlainValue(null));
         $this->assertEquals('123', stringifyPlainValue(123));
     }
+
+    public function testFormatPlain()
+    {
+        $filePath = realpath(__DIR__ . '/../../Fixtures/Formatters/fixture.json');
+        $fixture = json_decode(file_get_contents($filePath), true);
+
+        $expectedPath = realpath(__DIR__ . '/../../Fixtures/Formatters/expectedNestedPlain.txt');
+        $expected = file_get_contents($expectedPath);
+
+        $this->assertEquals($expected, formatPlain($fixture));
+    }
 }
