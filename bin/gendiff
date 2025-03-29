@@ -2,7 +2,7 @@
 <?php
 
 use Docopt\Handler;
-use function Gendiff\Differ\genDiff;
+use function Differ\Differ\genDiff;
 
 require __DIR__ . '/../vendor/autoload.php';
 
