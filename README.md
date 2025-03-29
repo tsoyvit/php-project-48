@@ -19,14 +19,33 @@
 
 1. Установите репозиторий:
 
+   ```bash
    git clone https://github.com/tsoyvit/php-project-48.git
    cd php-project-48
+   ```
 
-2. Установите зависимости: make install
+2. Установите зависимости:
+
+   ```bash
+   make install
+   ```
 
 ## Пример использования Cli утилиты:
 
-[![asciicast](https://asciinema.org/a/mGmCRaGNJpp2RiP7XH5ycFQqF.svg)](https://asciinema.org/a/mGmCRaGNJpp2RiP7XH5ycFQqF)
+Сравнение плоских файлов json
+[![asciicast](https://asciinema.org/a/FJoqOIULlkkrMNTZbcSGwDw2Q.svg)](https://asciinema.org/a/FJoqOIULlkkrMNTZbcSGwDw2Q)
+
+Сравнение плоских файлов yaml
+[![asciicast](https://asciinema.org/a/06WdT0MCXgXHn3PdSZCbJrLnU.svg)](https://asciinema.org/a/06WdT0MCXgXHn3PdSZCbJrLnU)
+
+Формат вывода stylish (по умолчанию)
+[![asciicast](https://asciinema.org/a/HvXuseXdiGiJCbKqd2TeXry66.svg)](https://asciinema.org/a/HvXuseXdiGiJCbKqd2TeXry66)
+
+Формат вывода plain
+[![asciicast](https://asciinema.org/a/SqpfpL6MoUyEsWW79TetsWziR.svg)](https://asciinema.org/a/SqpfpL6MoUyEsWW79TetsWziR)
+
+Формат вывода json
+[![asciicast](https://asciinema.org/a/xBYaPH53YNUUrFbunU3oP8GMu.svg)](https://asciinema.org/a/xBYaPH53YNUUrFbunU3oP8GMu)
 
 ## Пример использования библиотеки:
 
