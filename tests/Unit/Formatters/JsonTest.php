@@ -1,6 +1,6 @@
 <?php
 
-namespace Formatters;
+namespace Tests\Unit\Formatters;
 
 use PHPUnit\Framework\TestCase;
 

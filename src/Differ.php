@@ -5,7 +5,7 @@ namespace App\Differ;
 use Exception;
 
 use function App\Parser\parseFile;
-use function App\Formatters\format;
+use function App\Formatter\format;
 
 /**
  * @throws Exception

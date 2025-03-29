@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
-use function App\Formatters\format;
+use function App\Formatter\format;
 use function App\Formatters\Plain\formatPlain;
 use function App\Formatters\Stylish\formatStylish;
 
