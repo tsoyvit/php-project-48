@@ -2,38 +2,9 @@
 
 namespace Differ\Formatters\Plain;
 
-function formatPlain(array $diff, string $parentKey = ''): string
-{
-    $lines = [];
+use Exception;
 
-    foreach ($diff as $node) {
-        $key = $node['key'];
-        $fullKey = $parentKey ? "{$parentKey}.{$key}" : $key;
-        $type = $node['type'];
-
-        switch ($type) {
-            case 'nested':
-                $lines[] = formatPlain($node['children'], $fullKey);
-                break;
-            case 'added':
-                $value = stringifyPlainValue($node['value']);
-                $lines[] = "Property '{$fullKey}' was added with value: {$value}";
-                break;
-            case 'removed':
-                $lines[] = "Property '{$fullKey}' was removed";
-                break;
-            case 'changed':
-                $oldValue = stringifyPlainValue($node['oldValue']);
-                $newValue = stringifyPlainValue($node['newValue']);
-                $lines[] = "Property '{$fullKey}' was updated. From {$oldValue} to {$newValue}";
-                break;
-            case 'unchanged':
-                break;
-        }
-    }
-
-    return implode("\n", $lines);
-}
+use function Functional\map;
 
 function stringifyPlainValue(mixed $value): string
 {
@@ -50,4 +21,39 @@ function stringifyPlainValue(mixed $value): string
         return "'{$value}'";
     }
     return (string)$value;
+}
+
+function formatPlain(array $diff, string $parentKey = ''): string
+{
+    /**
+     * @throws Exception
+     */
+    $processNode = function ($node) use ($parentKey) {
+        $key = $node['key'];
+        $fullKey = $parentKey ? "{$parentKey}.{$key}" : $key;
+        $type = $node['type'];
+
+        switch ($type) {
+            case 'nested':
+                return formatPlain($node['children'], $fullKey);
+            case 'added':
+                $value = stringifyPlainValue($node['value']);
+                return "Property '{$fullKey}' was added with value: {$value}";
+            case 'removed':
+                return "Property '{$fullKey}' was removed";
+            case 'changed':
+                $oldValue = stringifyPlainValue($node['oldValue']);
+                $newValue = stringifyPlainValue($node['newValue']);
+                return "Property '{$fullKey}' was updated. From {$oldValue} to {$newValue}";
+            case 'unchanged':
+                return null;
+            default:
+                throw new Exception("Unknown node type: {$type}");
+        }
+    };
+
+    $lines = map($diff, $processNode);
+    $filteredLines = array_filter($lines, fn($line) => $line !== null);
+
+    return implode("\n", $filteredLines);
 }
