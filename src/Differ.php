@@ -1,11 +1,11 @@
 <?php
 
-namespace Gendiff\Differ;
+namespace Differ\Differ;
 
 use Exception;
 
-use function Gendiff\Parser\parseFile;
-use function Gendiff\Formatter\format;
+use function Differ\Parser\parseFile;
+use function Differ\Formatter\format;
 
 /**
  * @throws Exception

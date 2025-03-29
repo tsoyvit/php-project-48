@@ -4,7 +4,7 @@ namespace Tests\Unit\Formatters;
 
 use PHPUnit\Framework\TestCase;
 
-use function Gendiff\Formatters\Plain\{formatPlain, stringifyPlainValue};
+use function Differ\Formatters\Plain\{formatPlain, stringifyPlainValue};
 
 class PlainTest extends TestCase
 {

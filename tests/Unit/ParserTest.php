@@ -6,7 +6,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
-use function Gendiff\Parser\parseFile;
+use function Differ\Parser\parseFile;
 
 class ParserTest extends TestCase
 {
