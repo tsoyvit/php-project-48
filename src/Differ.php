@@ -33,20 +33,47 @@ function buildDiff(object $file1Data, object $file2Data): array
         $hasKey2 = property_exists($file2Data, $key);
 
         if ($hasKey1 && !$hasKey2) {
-            $reduction[] = ['type' => 'removed', 'key' => $key, 'value' => $file1Data->$key];
-        } elseif (!$hasKey1 && $hasKey2) {
-            $reduction[] = ['type' => 'added', 'key' => $key, 'value' => $file2Data->$key];
-        } elseif ($hasKey1 && $hasKey2) {
+            return array_merge($reduction, [[
+                'type' => 'removed',
+                'key' => $key,
+                'value' => $file1Data->$key
+            ]]);
+        }
+
+        if (!$hasKey1 && $hasKey2) {
+            return array_merge($reduction, [[
+                'type' => 'added',
+                'key' => $key,
+                'value' => $file2Data->$key
+            ]]);
+        }
+
+        if ($hasKey1 && $hasKey2) {
             $value1 = $file1Data->$key;
             $value2 = $file2Data->$key;
 
             if (is_object($value1) && is_object($value2)) {
-                $reduction[] = ['type' => 'nested', 'key' => $key, 'children' => buildDiff($value1, $value2)];
-            } elseif ($value1 === $value2) {
-                $reduction[] = ['type' => 'unchanged', 'key' => $key, 'value' => $value1];
-            } else {
-                $reduction[] = ['type' => 'changed', 'key' => $key, 'oldValue' => $value1, 'newValue' => $value2];
+                return array_merge($reduction, [[
+                    'type' => 'nested',
+                    'key' => $key,
+                    'children' => buildDiff($value1, $value2)
+                ]]);
             }
+
+            if ($value1 === $value2) {
+                return array_merge($reduction, [[
+                    'type' => 'unchanged',
+                    'key' => $key,
+                    'value' => $value1
+                ]]);
+            }
+
+            return array_merge($reduction, [[
+                'type' => 'changed',
+                'key' => $key,
+                'oldValue' => $value1,
+                'newValue' => $value2
+            ]]);
         }
 
         return $reduction;
