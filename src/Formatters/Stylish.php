@@ -40,7 +40,7 @@ function formatStylish(array $diff, int $depth = 0): string
     return implode("\n", $result);
 }
 
-function stringifyValue($value, int $depth = 0): string
+function stringifyValue(mixed $value, int $depth = 0): string
 {
     if (is_bool($value)) {
         return $value ? 'true' : 'false';

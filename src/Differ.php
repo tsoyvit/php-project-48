@@ -4,6 +4,8 @@ namespace Differ\Differ;
 
 use Exception;
 
+use function Functional\sort;
+use function Functional\reduce_left;
 use function Differ\Parser\parseFile;
 use function Differ\Formatter\format;
 
@@ -23,28 +25,30 @@ function buildDiff(object $file1Data, object $file2Data): array
     $keys1 = array_keys(get_object_vars($file1Data));
     $keys2 = array_keys(get_object_vars($file2Data));
     $allKeys = array_unique(array_merge($keys1, $keys2));
-    $sortedKeys = $allKeys;
-    usort($sortedKeys, fn($a, $b) => strcmp($a, $b));
-    $diff = [];
-    foreach ($sortedKeys as $key) {
+
+    $sortedKeys = sort($allKeys, fn($a, $b) => strcmp($a, $b));
+
+    return reduce_left($sortedKeys, function ($key, $index, $collection, $reduction) use ($file1Data, $file2Data) {
         $hasKey1 = property_exists($file1Data, $key);
         $hasKey2 = property_exists($file2Data, $key);
+
         if ($hasKey1 && !$hasKey2) {
-            $diff[] = ['type' => 'removed', 'key' => $key, 'value' => $file1Data->$key];
+            $reduction[] = ['type' => 'removed', 'key' => $key, 'value' => $file1Data->$key];
         } elseif (!$hasKey1 && $hasKey2) {
-            $diff[] = ['type' => 'added', 'key' => $key, 'value' => $file2Data->$key];
+            $reduction[] = ['type' => 'added', 'key' => $key, 'value' => $file2Data->$key];
         } elseif ($hasKey1 && $hasKey2) {
             $value1 = $file1Data->$key;
             $value2 = $file2Data->$key;
 
             if (is_object($value1) && is_object($value2)) {
-                $diff[] = ['type' => 'nested', 'key' => $key, 'children' => buildDiff($value1, $value2)];
+                $reduction[] = ['type' => 'nested', 'key' => $key, 'children' => buildDiff($value1, $value2)];
             } elseif ($value1 === $value2) {
-                $diff[] = ['type' => 'unchanged', 'key' => $key, 'value' => $value1];
+                $reduction[] = ['type' => 'unchanged', 'key' => $key, 'value' => $value1];
             } else {
-                $diff[] = ['type' => 'changed', 'key' => $key, 'oldValue' => $value1, 'newValue' => $value2];
+                $reduction[] = ['type' => 'changed', 'key' => $key, 'oldValue' => $value1, 'newValue' => $value2];
             }
         }
-    }
-    return $diff;
+
+        return $reduction;
+    }, []);
 }
