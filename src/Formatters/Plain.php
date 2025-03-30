@@ -31,7 +31,6 @@ function formatPlain(array $diff, string $parentKey = ''): string
     $processNode = function ($node) use ($parentKey) {
         $key = $node['key'];
         $fullKey = $parentKey !== '' ? "{$parentKey}.{$key}" : $key;
-//        $fullKey = $parentKey ? "{$parentKey}.{$key}" : $key;
         $type = $node['type'];
 
         switch ($type) {
