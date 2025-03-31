@@ -20,15 +20,6 @@ Options:
   -f, --format <fmt>             Report format (stylish, plain) [default: stylish]
 DOC;
 
-$handler = new Handler();
-
-$response = $handler->handle($doc);
-if ($response['--help']) {
-    echo $doc;
-} elseif ($response['--version']) {
-    echo "gendiff 1.0.0\n";
-} elseif (!empty($response['<firstFile>']) && !empty($response['<secondFile>'])) {
-    $format = $response['--format'];
-    $diff = genDiff($response['<firstFile>'], $response['<secondFile>'], $format);
-    echo $diff . "\n";
-}
+$args = Docopt::handle($doc, ['version' => '1.0']);
+$diff = genDiff($args['<firstFile>'], $args['<secondFile>'], $args['--format']);
+echo $diff . "\n";

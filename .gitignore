@@ -6,6 +6,7 @@
 /build/
 /coverage/
 /.phpunit.cache
+.phpunit.result.cache
 
 # IDE specific files
 .idea/
