@@ -7,6 +7,7 @@ use Exception;
 use function Functional\sort;
 use function Functional\reduce_left;
 use function Differ\Parser\getContentFile;
+use function Differ\Parser\parse;
 use function Differ\Formatter\format;
 
 /**
@@ -14,8 +15,13 @@ use function Differ\Formatter\format;
  */
 function genDiff(string $filepath1, string $filepath2, string $format = 'stylish'): string
 {
-    $file1Data = getContentFile($filepath1);
-    $file2Data = getContentFile($filepath2);
+    $extension1 = pathinfo($filepath1, PATHINFO_EXTENSION);
+    $extension2 = pathinfo($filepath2, PATHINFO_EXTENSION);
+    $file1Content = getContentFile($filepath1);
+    $file2Content = getContentFile($filepath2);
+    $file1Data = parse($file1Content, $extension1);
+    $file2Data = parse($file2Content, $extension2);
+
     $diff = buildDiff($file1Data, $file2Data);
     return format($diff, $format);
 }
