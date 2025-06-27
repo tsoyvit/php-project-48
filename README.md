@@ -20,7 +20,7 @@
 1. Установите репозиторий:
 
    ```bash
-   git clone https://github.com/tsoyvit/php-project-48.git
+   git clone https://github.com/tsoyvit/differ-cli.git
    cd php-project-48
    ```
 
