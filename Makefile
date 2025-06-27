@@ -12,3 +12,5 @@ test-coverage:
 	XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 test-coverage-text:
 	XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text
+stan:
+	./vendor/bin/phpstan analyse

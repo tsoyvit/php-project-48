@@ -11,10 +11,10 @@ use function Differ\Formatters\Plain\formatPlain;
 /**
  * @param array $diff
  * @param string $formatName
- * @return string|false
+ * @return string
  * @throws Exception
  */
-function format(array $diff, string $formatName): string|false
+function format(array $diff, string $formatName): string
 {
     return match ($formatName) {
         'stylish' => formatStylish($diff),
